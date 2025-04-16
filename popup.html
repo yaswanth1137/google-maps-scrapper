@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Google Maps Easy Scrape</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+      body {
+        min-width: 400px;
+        padding: 20px;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      h1 {
+        font-weight: 600;
+        margin: 0;
+      }
+
+      #message {
+        margin-top: 20px;
+        font-size: 18px;
+        font-weight: 500;
+      }
+      
+      /* Add styling for the redirect link */
+      .redirect-link {
+        color: #1587e4;
+        cursor: pointer;
+        text-decoration: underline;
+        display: inline-block;
+        padding: 5px 0;
+      }
+      
+      .redirect-link:hover {
+        color: #349ae8;
+      }
+
+      .button {
+        margin-top: 10px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 12px;
+        color: white;
+        background-color: #1587e4;
+        font-weight: 500;
+        font-family: 'Poppins', sans-serif;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+      }
+
+      .button:hover {
+        background-color: #0a4b7d;
+      }
+
+      .button:disabled {
+        background-color: grey;
+        cursor: not-allowed;
+      }
+      
+      .button.enabled {
+        background-color: #1587e4;
+        cursor: pointer;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
+
+      th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #f2f2f2;
+        color: black;
+      }
+
+      .loader {
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid #043758;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      /* Add section for scraping controls */
+      #scrapingSection {
+        margin-top: 15px;
+      }
+
+      .auth-section {
+        background-color: #f9f9f9;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 15px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+      
+      .input-group {
+        margin-bottom: 15px;
+      }
+      
+      .input-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+      
+      .input-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+      }
+      
+      .btn-logout {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+      }
+      
+      .pending-message {
+        background-color: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        margin-top: 15px;
+        border-radius: 4px;
+      }
+
+    </style>
+    <style>
+      /* Add to existing styles */
+      .status-toast {
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(0,0,0,0.9);
+          color: white;
+          padding: 12px 24px;
+          border-radius: 4px;
+          animation: slideUp 0.3s ease-out;
+      }
+      
+      @keyframes slideUp {
+          from { bottom: -50px; }
+          to { bottom: 20px; }
+      }
+      .checkmark-animation {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          display: block;
+          margin: 20px auto;
+          stroke-width: 2;
+          stroke: #4CAF50;
+          stroke-miterlimit: 10;
+          animation: fill-green 0.4s ease-in-out forwards,
+                     scale 0.3s ease-in-out both;
+      }
+      
+      @keyframes fill-green {
+          100% { background: rgba(76, 175, 80, 0.1); }
+      }
+      
+      @keyframes scale {
+          0%, 100% { transform: none; }
+          50% { transform: scale3d(1.1, 1.1, 1); }
+      }
+      </style>
+  </head>
+  <body>
+    <h1> 🗺️ Google Maps Easy Scrape</h1>
+    <div id="message">Checking URL...</div>
+
+    <!-- Login Section 
+    <div id="loginSection" class="auth-section">
+      <h2>Login to Access Scraper</h2>
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Email">
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Password">
+      </div>
+      <button id="loginButton" class="button">Login / Request Access</button>
+      <p>New user? Enter your details and click the button to request access.</p>
+    </div> -->
+    
+    <!-- Access Pending Section 
+    <div id="accessPendingSection" class="auth-section" style="display:none">
+      <div class="pending-message">
+        <h3>Access Request Pending</h3>
+        <p>Hello <span id="pendingUsername"></span>, your access request is waiting for approval.</p>
+        <p>Please check back later or contact the administrator.</p>
+      </div>
+      <button id="logoutButton" class="button">Logout</button>
+    </div> -->
+    
+   <!-- Main App Section 
+    <div id="mainAppSection" style="display:none">
+      <button id="logoutButtonMain" class="btn-logout">Logout</button>
+      <div id="message">Checking URL...</div> -->
+    
+    <div id="scrapingSection" style="display:none;">
+      <div id="loader" class="loader" style="display:none;"></div>
+      <button id="actionButton" class="button" disabled>Start Scraping</button>
+      <button id="downloadCSV" class="button" style="margin-left: 10px; display: none;">Download CSV</button>
+    </div>
+
+    <table id="resultsTable">
+      <thead>
+        <tr></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    </div>
+
+   <!-- <div id="adminPanel" style="display:none;">
+      <h2>Admin Controls</h2>
+      <div id="pendingRequests"></div>
+    </div> -->
+ <!-- Keep only these script tags -->
+   <!-- <script type = 'module' src="firebase-config.js"></script> 
+    <script type = 'module' src="auth.js"></script> -->
+    <script type = 'module' src="popup.js"></script>
+
+  </body>
+</html>
+

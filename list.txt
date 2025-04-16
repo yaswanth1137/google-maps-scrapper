@@ -1,0 +1,13 @@
+url of google buisiness
+Name
+Star Rating
+Amount of Reviews
+Type of buisiness
+Address
+Website
+Phone
+Hours???
+
+Other Info
+Services???
+Online AP?
